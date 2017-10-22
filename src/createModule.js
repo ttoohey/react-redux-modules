@@ -35,15 +35,15 @@ function globalizeReducer(path, reducer) {
   }
 }
 
-function createContainer(path, reducer = null, saga = null) {
+function createContainer(module) {
   return Container => class extends React.Component {
     static contextTypes = {
       store: PropTypes.object.isRequired
     }
     constructor (props, context) {
       super()
-      reducer && context.store.injectReducer(path, globalizeReducer(path, reducer))
-      saga && context.store.injectSaga(path, saga)
+      module.reducer && context.store.injectReducer(module.path, module.reducer)
+      module.saga && context.store.injectSaga(module.path, module.saga)
     }
     render () {
       return <Container {...this.props} />
@@ -53,12 +53,13 @@ function createContainer(path, reducer = null, saga = null) {
 
 const createModule = (path, duck, Container) => {
   const module = {}
-  module.withReducer = reducer => { module.reducer = reducer;  return module }
+  module.path = path
+  module.withReducer = reducer => { module.reducer = globalizeReducer(path, reducer);  return module }
   module.withSaga = saga => { module.saga = saga; return module }
   module.actions = () => globalizeActions(path, duck.actions)
   module.selectors = () => globalizeSelectors(path, duck.selectors)
   module.types = () => globalizeTypes(path, duck.types)
-  module.container = () => createContainer(path, module.reducer, module.saga)(Container)
+  module.container = () => createContainer(module)(Container)
   return module
 }
 
