@@ -1,6 +1,6 @@
 {
   "name": "@ttoohey/react-redux-modules",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Yet another take on modularizing redux-connected react components intended to reduce boilerplate and give modules a structure.",
   "main": "dist/index.js",
   "scripts": {
